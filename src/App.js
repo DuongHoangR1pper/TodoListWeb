@@ -1,24 +1,62 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useCallback, useEffect, useState } from "react";
+import ToDoList from "./components/toDoList";
+import Textfield from "@atlaskit/textfield";
+import Button from "@atlaskit/button";
+import { v4 } from "uuid";
 
+const TODO_STORAGE_KEY = "TODO_APP";
 function App() {
+  const [input, setInput] = useState("");
+  const [todos, setTodos] =  useState(() => {
+    const storgareTodo = localStorage.getItem(TODO_STORAGE_KEY);
+    return storgareTodo ? JSON.parse(storgareTodo) : [];
+  });
+  // useEffect(() => {
+  //   const storgareTodo = localStorage.getItem(TODO_STORAGE_KEY);
+  //   if (storgareTodo) {
+  //     console.log("Loaded from storage:", storgareTodo); // Debug
+  //     setTodos(JSON.parse(storgareTodo));
+  //   }
+  // }, []);
+  useEffect(() => {
+    localStorage.setItem(TODO_STORAGE_KEY, JSON.stringify(todos));
+  }, [todos]);
+  const addToDo = useCallback(() => {
+    if (input.trim()) {
+      setTodos([...todos, { id: v4(), name: input, isCompleted: false }]);
+      setInput("");
+    }
+  }, [input]);
+  const onTextChange = useCallback((e) => {
+    setInput(e.target.value);
+  }, []);
+  const onCheckComplete = useCallback((id) => {
+    setTodos((prevTodo) =>
+      prevTodo.map((todo) =>
+        todo.id === id ? { ...todo, isCompleted: !todo.isCompleted } : todo
+      )
+    );
+  }, []);
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h3>Danh sách cần làm</h3>
+      <Textfield
+        name="add-todo"
+        placeholder="Thêm việc cần làm"
+        value={input}
+        onChange={onTextChange}
+        elemAfterInput={
+          <Button
+            appearance="primary"
+            onClick={addToDo}
+            isDisabled={!input.trim()}
+          >
+            Thêm
+          </Button>
+        }
+      ></Textfield>
+      <ToDoList todos={todos} onCheckComplete={onCheckComplete} />
+    </>
   );
 }
 

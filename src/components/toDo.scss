@@ -1,0 +1,36 @@
+.todo-button {
+    margin-top: 5px;
+    text-align: left;
+    align-items: center;
+    display: flex;
+    position: relative; 
+    background-color: #e2e2e2;
+    border: none; 
+    cursor: pointer; 
+    padding: 10px; 
+    width: 100%; 
+    height: 40px;
+    font-weight: 300;
+    font-size: 26px;
+}
+
+.check-icon {
+    display: none;
+    position: absolute; 
+    right: 10px; 
+    top: 50%; 
+    transform: translateY(-50%); 
+    background-color: transparent; 
+    border-radius: 3px; 
+    padding: 5px; 
+    transition: background-color 0.3s; 
+}
+
+.todo-button:hover .check-icon {
+    display: inline-block; /* Hiển thị biểu tượng khi hover nút */
+}
+
+.check-icon:hover {
+    background-color: #e2e2e2; /* Màu nền khi hover vào biểu tượng */
+    cursor: pointer; /* Đổi con trỏ khi hover */
+}
